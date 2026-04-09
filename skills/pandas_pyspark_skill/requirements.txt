@@ -1,0 +1,22 @@
+# Pandas to PySpark Converter - Dependencies
+# Updated: 2026-04-08
+
+# CORE DEPENDENCIES (Required)
+# All built-in to Python 3.9+
+# - ast, re, os, pathlib, typing, json, datetime, logging
+
+# OPTIONAL - Enhanced Features
+astor>=0.8.1          # Alternative AST unparsing (if not using Python 3.9+)
+pandas>=1.3.0         # Enhanced reporting capabilities
+
+# OPTIONAL - Execute Converted Code
+pyspark>=3.0.0        # Run converted PySpark code locally
+
+# OPTIONAL - Databricks Features
+databricks-sql-connector>=2.0.0  # Query Databricks SQL
+databricks-sdk>=0.3.0            # Workspace access
+databricks-connect>=13.0.0       # Spark Connect sessions
+
+# OPTIONAL - Development & Testing
+pytest>=6.0           # Testing framework
+pytest-cov>=2.12      # Coverage reporting

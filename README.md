@@ -17,15 +17,101 @@ Open `http://localhost:8501` in your browser.
 
 ## How It Works
 
-1. **Skill Discovery** — You describe what you need in natural language (e.g., "Analyze my ARM template"). Data Genie scans its skills and shows you the top 3 matches.
+1. **Skill Discovery** — You describe what you need in natural language (e.g., "Analyze my ARM template" or "Convert pandas to PySpark in batch"). Data Genie scans its skills and shows you the top 3 matches.
 
-2. **Confirmation Checkpoint** — Before running anything, you review the selected skill, input file, and output folder. You must explicitly approve before execution begins.
+2. **Processing Mode Selection** — Choose between:
+   - **Single File** — Process one file at a time
+   - **Batch (Folder)** — Process entire folder hierarchies in parallel (see Batch Processing below)
 
-3. **Skill Execution** — The selected skill runs and streams progress messages live to the chat so you always see what's happening. Each step is marked with a checkmark as it completes.
+3. **Confirmation Checkpoint** — Before running anything, you review the selected skill, input path(s), output folder, and any batch settings. You must explicitly approve before execution begins.
 
-4. **Output Review** — Skill results are displayed as a markdown report with metrics and download buttons. An optional AI reviewer can flag quality issues (disabled if no API key configured).
+4. **Skill Execution** — The selected skill runs and streams progress messages live to the chat so you always see what's happening. Each step is marked with a checkmark as it completes.
 
-5. **Refinement Loop** — You can approve the results, request changes, or try again (max 3 iterations). Feedback is passed back to the skill to improve its output.
+5. **Output Review** — Skill results are displayed as a markdown report with metrics and download buttons. An optional AI reviewer can flag quality issues (disabled if no API key configured).
+
+6. **Refinement Loop** — You can approve the results, request changes, or try again (max 3 iterations). Each attempt gets a unique run ID so you can compare across iterations. Feedback is passed back to the skill to improve its output.
+
+## Batch Processing
+
+Data Genie supports **scalable parallel batch processing** for any skill. Process entire folder hierarchies without modifying the skill code.
+
+### Batch Processing Modes
+
+Choose the right mode for your workload:
+
+| Mode | Best For | Performance | Memory |
+|------|----------|-------------|--------|
+| **Parallel** | CPU-heavy tasks (code conversion, ARM parsing, Spark migration) | 4-8x faster | Higher (multiprocessing) |
+| **Threaded** | I/O-bound tasks (data copying, discovery, CSV reading) | 2-3x faster | Lower (threading) |
+| **Sequential** | Debugging, small datasets, or single-core systems | Baseline | Minimal |
+
+### Features
+
+✅ **Hierarchical folder processing** — Recursively process all files matching a pattern  
+✅ **Automatic worker allocation** — Intelligently scales to available CPU cores (max 4 workers by default)  
+✅ **Multi-user support** — Concurrent users don't interfere with each other  
+✅ **Run ID tracking** — Each execution gets a timestamped run ID (e.g., `20260410_093532_1234`)  
+✅ **Execution history** — All runs archived in separate folders, visible in output directory  
+✅ **Consolidated output** — Auto-creates `converted_pyspark_files/` folder with all results (for skills that support it)  
+✅ **Progress reporting** — Real-time status as files complete  
+✅ **Error isolation** — Failures in one file don't stop batch processing  
+
+### Batch Processing Example
+
+**UI Workflow:**
+1. Select "Batch (Folder)" mode in sidebar
+2. Specify input folder: `C:/code/python_scripts`
+3. Set file pattern: `*.py` (or `*` for all files)
+4. Choose processing mode: Parallel (fast), Threaded (balanced), Sequential (debug)
+5. Set max workers: Auto-allocated, but you can override (1-16)
+6. Specify output folder: `C:/results/`
+7. Select skill (e.g., "Pandas to PySpark Converter")
+8. Confirm and run
+
+**Output Structure:**
+```
+results/
+├── 20260410_093532_1234/          # First run
+│   ├── file1.py/
+│   │   ├── converted_code.py
+│   │   ├── discovery_report.json
+│   │   └── conversion_summary.json
+│   ├── file2.py/
+│   │   ├── converted_code.py
+│   │   ├── discovery_report.json
+│   │   └── conversion_summary.json
+│   ├── converted_pyspark_files/    # Consolidated output (auto-created)
+│   │   ├── file1.py
+│   │   └── file2.py
+│   └── batch_results.json          # Summary report
+│
+├── 20260410_093545_9876/          # Second run (after "Try again")
+│   ├── file1.py/
+│   ├── file2.py/
+│   ├── converted_pyspark_files/
+│   └── batch_results.json
+│
+└── 20260410_093602_5432/          # Third run (after refinement)
+    ├── file1.py/
+    ├── file2.py/
+    ├── converted_pyspark_files/
+    └── batch_results.json
+```
+
+### Try Again with Batch
+
+When you click **"Try again"** after a batch run:
+- ✅ New run ID generated (different timestamp)
+- ✅ Previous results archived in their folder
+- ✅ Notification shows old run ID was archived
+- ✅ New results in separate subfolder
+- ✅ Can compare multiple attempts side-by-side
+
+### Auto-Consolidation
+
+Skills that support consolidation (e.g., Pandas to PySpark Converter) automatically create a `converted_pyspark_files/` folder containing just the converted output files, making it easy to extract and use the results.
+
+---
 
 ## Adding a New Skill
 
@@ -461,10 +547,21 @@ skills/my_skill/
 ### Skill execution hangs
 **Solution:** Check if the input file exists and is valid. Skills have a 5-minute timeout.
 
+## Multi-User Session Management
+
+Data Genie supports **concurrent multi-user sessions** with automatic isolation:
+
+- **Session ID** — Each user gets a unique session ID (UUID + timestamp)
+- **Isolated results** — Each session's results go to separate folders
+- **Resource sharing** — Worker allocation respects multi-user environments (max 1/4 of CPU cores per user)
+- **No conflicts** — Multiple users can run batch jobs simultaneously without interference
+
+Session info is visible in the sidebar (Session ID, started time).
+
 ## Limitations & Future Work
 
 - Local execution only (no cloud deployment)
-- Single-user (Streamlit limitation)
+- Single machine concurrency (multi-user via session isolation)
 - Skill parameter validation uses schema.json only (no custom validators)
 - Progress streaming uses Streamlit's `st.empty()` re-renders (not true streaming)
 - AI review disabled if no LLM API key configured
