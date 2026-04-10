@@ -1,0 +1,41 @@
+{
+  "input": {
+    "input_path": {
+      "type": "string",
+      "required": true,
+      "description": "Path to data file (CSV, Parquet, JSON, Delta)"
+    },
+    "output_path": {
+      "type": "string",
+      "required": true,
+      "description": "Folder to write output files"
+    },
+    "sample_size": {
+      "type": "integer",
+      "required": false,
+      "default": 1000,
+      "description": "Number of rows to sample for profiling"
+    },
+    "file_type": {
+      "type": "string",
+      "required": false,
+      "enum": ["csv", "parquet", "json", "delta", "auto"],
+      "default": "auto",
+      "description": "Auto-detect if not specified"
+    }
+  },
+  "output": {
+    "summary": {
+      "type": "string",
+      "description": "Markdown discovery report"
+    },
+    "output_files": {
+      "type": "array",
+      "description": "Absolute paths of output files"
+    },
+    "data": {
+      "type": "object",
+      "description": "Structured schema, null rates, row count, quality flags"
+    }
+  }
+}

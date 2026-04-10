@@ -1,0 +1,41 @@
+{
+  "input": {
+    "input_path": {
+      "type": "string",
+      "required": true,
+      "description": "Path to PySpark script or code file"
+    },
+    "output_path": {
+      "type": "string",
+      "required": true,
+      "description": "Folder to write output files"
+    },
+    "target_databricks_runtime": {
+      "type": "string",
+      "required": false,
+      "default": "13.3 LTS",
+      "description": "Target Databricks runtime version"
+    },
+    "migration_mode": {
+      "type": "string",
+      "required": false,
+      "default": "as_is",
+      "enum": ["as_is", "optimised"],
+      "description": "Assessment depth"
+    }
+  },
+  "output": {
+    "summary": {
+      "type": "string",
+      "description": "Markdown migration plan"
+    },
+    "output_files": {
+      "type": "array",
+      "description": "Absolute paths of output files"
+    },
+    "data": {
+      "type": "object",
+      "description": "incompatibility_count, risk_assessment, api_changes"
+    }
+  }
+}

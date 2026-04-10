@@ -49,10 +49,14 @@ htmlcov/
 
 # Project specific
 *.xlsx
-*.json
+!skill_registry.json
+!schema.json
+!requirements.txt
 *.md
 !SKILL.md
 !README.md
-!CODE_ISSUES_REPORT.md
+!COMMIT_CHANGELOG.md
+!skills/*/schema.json
+!skills/pandas_pyspark_skill/requirements.txt
 output/
 results/

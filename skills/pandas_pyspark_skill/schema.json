@@ -1,0 +1,89 @@
+{
+  "tools": [
+    {
+      "name": "run",
+      "description": "Convert pandas Python code to PySpark equivalents",
+      "input": {
+        "input_path": {
+          "type": "string",
+          "required": true,
+          "description": "Path to Python file or folder containing pandas code"
+        },
+        "output_path": {
+          "type": "string",
+          "required": true,
+          "description": "Folder for converted code and reports"
+        },
+        "path_mapping": {
+          "type": "object",
+          "required": false,
+          "description": "Map old mount paths to new: {'/mnt/old': '/mnt/new'}"
+        },
+        "auto_install_deps": {
+          "type": "boolean",
+          "required": false,
+          "default": true,
+          "description": "Auto-install missing dependencies (astor, pandas)"
+        },
+        "enable_spark_testing": {
+          "type": "boolean",
+          "required": false,
+          "default": true,
+          "description": "Enable side-by-side testing with PySpark (if available)"
+        },
+        "auto_consolidate": {
+          "type": "boolean",
+          "required": false,
+          "default": true,
+          "description": "Automatically consolidate converted files into converted_pyspark_files/ folder"
+        }
+      },
+      "output": {
+        "summary": {
+          "type": "string",
+          "description": "Conversion report with operations, changes, and Spark status"
+        },
+        "output_files": {
+          "type": "array",
+          "description": "Converted code(s), discovery report, conversion summary, consolidated folder"
+        },
+        "data": {
+          "type": "object",
+          "description": "Metrics: operations_found, changes_made, conversion_confidence, consolidated_folder, consolidated_file_count"
+        }
+      }
+    },
+    {
+      "name": "consolidate",
+      "description": "Consolidate converted PySpark files into organized folders",
+      "input": {
+        "output_path": {
+          "type": "string",
+          "required": true,
+          "description": "Path to existing converter output folder"
+        },
+        "consolidate_mode": {
+          "type": "string",
+          "required": false,
+          "default": "files_only",
+          "enum": ["files_only", "with_reports", "clean_output"],
+          "description": "Consolidation mode: files_only (only .py), with_reports (.py + reports), clean_output (complete package)"
+        }
+      },
+      "output": {
+        "summary": {
+          "type": "string",
+          "description": "Consolidation report with file listing"
+        },
+        "output_files": {
+          "type": "array",
+          "description": "Path to consolidated folder"
+        },
+        "data": {
+          "type": "object",
+          "description": "Metrics: consolidated_files, reports_included, consolidation_mode, consolidated_folder"
+        }
+      }
+    }
+  ]
+}

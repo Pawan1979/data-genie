@@ -1,0 +1,39 @@
+{
+  "input": {
+    "input_path": {
+      "type": "string",
+      "required": true,
+      "description": "Path to source data file"
+    },
+    "output_path": {
+      "type": "string",
+      "required": true,
+      "description": "Folder to write output files"
+    },
+    "target_path": {
+      "type": "string",
+      "required": false,
+      "description": "Path to target data file for comparison"
+    },
+    "sample_percent": {
+      "type": "integer",
+      "required": false,
+      "default": 10,
+      "description": "Percentage of rows to sample for detailed comparison"
+    }
+  },
+  "output": {
+    "summary": {
+      "type": "string",
+      "description": "Markdown validation report"
+    },
+    "output_files": {
+      "type": "array",
+      "description": "Absolute paths of output files"
+    },
+    "data": {
+      "type": "object",
+      "description": "row_count_match, schema_match, data_discrepancies"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "input": {
+    "input_path": {
+      "type": "string",
+      "required": true,
+      "description": "Source file path"
+    },
+    "output_path": {
+      "type": "string",
+      "required": true,
+      "description": "Destination folder"
+    },
+    "verify_checksum": {
+      "type": "boolean",
+      "required": false,
+      "default": true,
+      "description": "Verify SHA256 after copy"
+    }
+  },
+  "output": {
+    "summary": {
+      "type": "string",
+      "description": "Markdown copy report"
+    },
+    "output_files": {
+      "type": "array",
+      "description": "Absolute paths of output files"
+    },
+    "data": {
+      "type": "object",
+      "description": "source_size, dest_size, checksum_match, duration"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "input": {
+    "input_path": {
+      "type": "string",
+      "required": true,
+      "description": "Path to ARM template JSON file"
+    },
+    "output_path": {
+      "type": "string",
+      "required": true,
+      "description": "Folder to write output files"
+    },
+    "include_child_resources": {
+      "type": "boolean",
+      "required": false,
+      "default": true,
+      "description": "Parse nested child resources"
+    },
+    "min_risk_severity": {
+      "type": "string",
+      "required": false,
+      "default": "LOW",
+      "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"],
+      "description": "Minimum risk flag severity to report"
+    }
+  },
+  "output": {
+    "summary": {
+      "type": "string",
+      "description": "Markdown report for chat"
+    },
+    "output_files": {
+      "type": "array",
+      "description": "Absolute paths of output files"
+    },
+    "data": {
+      "type": "object",
+      "description": "Structured result with resource_count, types, risks, dependencies"
+    }
+  }
+}
